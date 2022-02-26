@@ -1,4 +1,4 @@
-# PE-Imports
+# PE-Imports ![Language Shields tag](https://img.shields.io/badge/language-Python-blue)
 
 ## Usage
 *This script requires [pefile](https://github.com/erocarrera/pefile) to be installed.*
