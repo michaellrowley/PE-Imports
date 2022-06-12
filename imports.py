@@ -17,9 +17,7 @@ def catchStr(data):
     elif isinstance(data, bytes):
         return data.decode()
     else:
-
-          # if isinstance(data, int)):
-
+        # if isinstance(data, int)):
         return str(data)
 
 
@@ -28,7 +26,7 @@ try:
     key_imports = open(sys.argv[2], 'r').read().split('\n')
     output_file = open(sys.argv[3], 'w')
 except:
-    print 'An invalid path was provided.'
+    print('An invalid path was provided.')
     exit()
 
 try:
@@ -55,11 +53,11 @@ def log_imports(path):
             if function_import.name is not None:
                 for key_import in key_imports:
                     if not printed_path:
-                        print path
+                        print(path)
                         printed_path = True
                     if fnmatch.fnmatch(function_import.name.decode(),
                             key_import):
-                        print to_log
+                        print(to_log)
 
 
 def get_applicable_files(base_path):
