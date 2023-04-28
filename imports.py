@@ -1,15 +1,11 @@
-#!/usr/bin/python
 import pefile
 import sys
 import os
 import fnmatch
-import pathlib
-
+import glob
 
 def catchStr(data):
-
     # 'data' is expected to be a string.
-
     if data is None:
         return 'null'
     if isinstance(data, str):
@@ -20,20 +16,13 @@ def catchStr(data):
         # if isinstance(data, int)):
         return str(data)
 
-
 try:
     target_path = sys.argv[1]
     key_imports = open(sys.argv[2], 'r').read().split('\n')
     output_file = open(sys.argv[3], 'w')
 except:
-    print('An invalid path was provided.')
+    print('imports.py binary_dir/ key-imports.txt output-log.txt')
     exit()
-
-try:
-    max_recursion = sys.argv[4]
-except:
-    max_recursion = None
-
 
 def log_imports(path):
     try:
@@ -59,21 +48,5 @@ def log_imports(path):
                             key_import):
                         print(to_log)
 
-
-def get_applicable_files(base_path):
-    file_paths = []
-    if os.path.isfile(base_path):
-        file_paths.append(base_path)
-    else:
-        for iterative_path in pathlib.Path(base_path).rglob('*.sys'):
-            strrep = str(iterative_path)
-            if max_recursion is not None:
-                if max_recursion < strrep.count('/') \
-                    - target_path.count('/'):
-                    continue
-            file_paths.append(strrep)
-    return file_paths
-
-
-for file in get_applicable_files(target_path):
+for file in glob.glob(target_path + "/**/*.sys", recursive=True):
     log_imports(file)
