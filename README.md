@@ -12,40 +12,61 @@ The arguments that are passed into this script should be done so in the followin
 - ``delim``: The path to a file whose contents are the delimiter for the file referenced by the ``strings`` argument.
 - ``strings``: The path to a ``delim``-separated file of bytes that should be flagged if located.
 - ``basepath``: The path to a file or directory which should be recursively scanned.
+- ``extension``: The extension (excluding leading dot) of files to be searched (default: 'sys').
 
 # Example Output
 
-> [This](https://gchq.github.io/CyberChef/#recipe=Comment('Be%20sure%20to%20add%20a%20%5C'Find%20/%20Replace%5C'%20*between*%20regexes')Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IoCreateDevice(/null)?%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')Find_/_Replace(%7B'option':'Regex','string':'%5C%5Cn%5C%5Cn'%7D,'%5C%5Cn',true,false,true,false)Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!ZwMapViewOfSection(/null)?%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')Find_/_Replace(%7B'option':'Regex','string':'%5C%5Cn%5C%5Cn'%7D,'%5C%5Cn',true,false,true,false)Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IoCreateSymbolicLink(/null)?%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')Find_/_Replace(%7B'option':'Regex','string':'%5C%5Cn%5C%5Cn'%7D,'%5C%5Cn',true,false,true,false)Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IofCompleteRequest(/null)?%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')&ienc=65001) CyberChef query is compatible with the output format of what ``imports.py`` prints to the console or what it logs to the ``-o`` output location. By default, it lists drivers which import ``IoCreateDevice``, ``IoCreateSymbolicLink``, ``ZwMapViewOfSection``, and ``IofCompleteRequest`` to demonstrate the matching patterns' non-mutually exclusive nature. This pattern is good for retrospective processing (using the large ``-o`` file) or narrowing down a search field from listings in stdout. Additionally, ``^[\/\w][^\n]+\n(\s+[^\n]+\n){0,5}(?=[^\s])`` as a regular expression can be used to identify results whose drivers have less than a given number of imports (in this example, five is used) which is a common signal of ``.sys`` obfuscation/packing.
-
 ```
-drivers/SgrmAgent.sys:
-        ntoskrnl.exe!MmMapLockedPagesSpecifyCache/null
-        ntoskrnl.exe!ZwQueryInformationFile/null
-        ntoskrnl.exe!ZwMapViewOfSection/null
-        ntoskrnl.exe!MmMapIoSpaceEx/null
-        ntoskrnl.exe!ZwOpenFile/null
-        ntoskrnl.exe!ZwQueryVirtualMemory/null
-        ntoskrnl.exe!IoCreateDevice/null
-drivers/storport.sys:
-        ntoskrnl.exe!ZwMapViewOfSection/null
-        ntoskrnl.exe!MmMapLockedPagesSpecifyCache/null
-        ntoskrnl.exe!IoCreateDevice/null
-        ntoskrnl.exe!MmMapIoSpaceEx/null
-        ntoskrnl.exe!MmMapIoSpace/null
-drivers/vhdmp.sys:
-        ntoskrnl.exe!MmMapLockedPagesSpecifyCache/null
-        ntoskrnl.exe!MmMapLockedPagesWithReservedMapping/null
-        ntoskrnl.exe!ZwSetInformationFile/null
-        ntoskrnl.exe!ZwReadFile/null
-        ntoskrnl.exe!ZwMapViewOfSection/null
-        ntoskrnl.exe!IoCreateDevice/null
-        ntoskrnl.exe!ZwOpenFile/null
+A:/Windows/System32/sioctl.sys
+	ntoskrnl.exe!RtlInitUnicodeString/null @ 0x00402000
+	ntoskrnl.exe!ProbeForRead/null @ 0x00402004
+	ntoskrnl.exe!MmProbeAndLockPages/null @ 0x00402008
+	ntoskrnl.exe!MmUnlockPages/null @ 0x0040200C
+	ntoskrnl.exe!MmMapLockedPagesSpecifyCache/null @ 0x00402010
+	ntoskrnl.exe!IoAllocateMdl/null @ 0x00402014
+	ntoskrnl.exe!IofCompleteRequest/null @ 0x00402018
+	ntoskrnl.exe!IoCreateDevice/null @ 0x0040201C
+	ntoskrnl.exe!IoCreateSymbolicLink/null @ 0x00402020
+	ntoskrnl.exe!IoDeleteDevice/null @ 0x00402024
+	ntoskrnl.exe!IoDeleteSymbolicLink/null @ 0x00402028
+	ntoskrnl.exe!IoFreeMdl/null @ 0x0040202C
+	ntoskrnl.exe!memcpy/null @ 0x00402030
+	ntoskrnl.exe!RtlUnwind/null @ 0x00402034
+B:/Windows/System32/netio.sys
+	ntoskrnl.exe!ExRegisterCallback/null @ 0x0005E000
+	ntoskrnl.exe!ObfDereferenceObject/null @ 0x0005E008
+	ntoskrnl.exe!ExCreateCallback/null @ 0x0005E010
+	ntoskrnl.exe!RtlStringFromGUID/null @ 0x0005E018
+	ntoskrnl.exe!ZwQueryValueKey/null @ 0x0005E020
+	ntoskrnl.exe!ZwClose/null @ 0x0005E028
+	ntoskrnl.exe!ZwOpenKey/null @ 0x0005E030
+	ntoskrnl.exe!MmUnmapLockedPages/null @ 0x0005E038
+	ntoskrnl.exe!MmAllocatePagesForMdlEx/null @ 0x0005E040
+	... *snip* ...
+	msrpc.sys!NdrMesTypeDecode3/null @ 0x0005E608
+	msrpc.sys!MesHandleFree/null @ 0x0005E610
+	msrpc.sys!MesDecodeBufferHandleCreate/null @ 0x0005E618
+	msrpc.sys!RpcExceptionFilter/null @ 0x0005E620
+C:/Windows/System32/WinAccel.sys
+	ntoskrnl.exe!KeInitializeDpc/null @ 0x1C000B018
+	ntoskrnl.exe!ZwDeviceIoControlFile/null @ 0x1C000B020
+	ntoskrnl.exe!ZwCreateFile/null @ 0x1C000B028
+	ntoskrnl.exe!IoGetRelatedDeviceObject/null @ 0x1C000B030
+	ntoskrnl.exe!ObfDereferenceObject/null @ 0x1C000B038
+	ntoskrnl.exe!RtlFreeUnicodeString/null @ 0x1C000B040
+	ntoskrnl.exe!RtlInitUnicodeString/null @ 0x1C000B048
+	ntoskrnl.exe!ExQueueWorkItem/null @ 0x1C000B050
+	ntoskrnl.exe!ExWaitForRundownProtectionRelease/null @ 0x1C000B058
 ...
 ```
+
+> Feel free to use [this](https://gchq.github.io/CyberChef/#recipe=Comment('Be%20sure%20to%20add%20a%20%5C'Find%20/%20Replace%5C'%20*between*%20regexes')Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IoCreateDevice%5B%5C%5C/%5C%5C@%5C%5Cs%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IoCreateSymbolicLink%5B%5C%5C/%5C%5C@%5C%5Cs%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IofCompleteRequest%5B%5C%5C/%5C%5C@%5C%5Cs%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')) CyberChef query to list drivers which import ``IoCreateDevice``, ``IoCreateSymbolicLink``, ``ZwMapViewOfSection``, and ``IofCompleteRequest`` via postprocessing (using an output/``-o`` file).
+
+> Additionally, ``^[\/\w][^\n]+\n(\s+[^\n]+\n){0,5}(?=[^\s])`` may be used as a regular expression to identify  drivers with less than a five imports, common signal of obfuscation/packing.
 
 ## Tips
 - Running this on Linux (or WSL) makes it much easier to do a wider-range of scanning across drivers as the root ``/mnt/`` path can be used to have the program enumerate imports from all drives (allowing for a more generic scanning process) but the tool is compatible with all operating-systems that support PEFile and Python 3.
 
-- The ``output`` argument/file is used to store every import that the tool comes across so that searching the same file again with a different 'Key imports' list/parameter doesn't require a full re-analysis and so that the user can just manually look through the output file for their new criteria without spending time re-scanning entire files.
+- Following the above point, a well-[configured](https://github.com/qilingframework/qiling/blob/master/examples/scripts/dllscollector.bat) Qiling [rootfs](https://github.com/qilingframework/rootfs) can be an adequate starting point for becoming accustomed to the tool.
 
-- This script currently only searches files with suffixes of ``'.sys'`` (as they must match the glob query ``*.sys``) - this is because my initial use for this script was for searching drivers for interesting imports. The required extension query can be changed by modifying the script to fit your search criteria (e.g '``*.dll``', '``*.exe``', or just remove the check completely)
+- The ``output`` argument/file is used to store every import that the tool comes across so that searching the same file again with a different 'Key imports' list/parameter doesn't require a full re-analysis and so that the user can just manually look through the output file for their new criteria without spending time re-scanning entire files.

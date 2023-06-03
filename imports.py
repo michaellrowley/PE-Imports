@@ -5,13 +5,15 @@ import fnmatch
 import glob
 import argparse
 
-argument_parser = argparse.ArgumentParser(prog="PE-Imports", description="logs all of the imports of a given executable")
+argument_parser = argparse.ArgumentParser(prog="PE-Imports", description="a tool for rapidly triaging binaries")
 
-argument_parser.add_argument("basepath")
-argument_parser.add_argument("-i", "--imports")
-argument_parser.add_argument("-o", "--output")
-argument_parser.add_argument("-d", "--delim")
-argument_parser.add_argument("-s", "--strings")
+argument_parser.add_argument("basepath", help="the path to a file or directory which should be recursively scanned.")
+argument_parser.add_argument("-i", "--imports", help="the path to a newline-separated file of strings that represent imports to be flagged.")
+argument_parser.add_argument("-o", "--output", help="the path to a file where a complete log of all imports should be written.")
+argument_parser.add_argument("-d", "--delim", help="the path to a file whose contents are the delimiter for the file referenced by the strings argument.")
+argument_parser.add_argument("-s", "--strings", help="the path to a delim-separated file of bytes that should be flagged if located.")
+# Currently avoiding the use of '-e' as it is reserved for an '--export' argument.
+argument_parser.add_argument("-x", "--extension", help="the extension (excluding leading dot) of files to be searched (default: 'sys').", default="sys")
 
 arguments = argument_parser.parse_args()
 
@@ -54,10 +56,10 @@ def log_imports(path):
         for import_module in path_imports:
             module_name = import_module.dll.decode()
             for function_import in import_module.imports:
-                
                 to_log = '\t' + module_name + '!' \
                     + catchStr(function_import.name) + '/' \
-                    + catchStr(function_import.ordinal)
+                    + catchStr(function_import.ordinal) + \
+                    " @ 0x%0.8X" % (function_import.address)
 
                 if output_file is not None:
                     output_file.write(to_log + '\n')
@@ -66,7 +68,7 @@ def log_imports(path):
                     for key_import in key_imports:
                         if fnmatch.fnmatch(function_import.name.decode(), key_import):
                             if not printed_path:
-                                print("\n" + path + " (Imports):")
+                                print("\n" + path + ":")
                                 printed_path = True
                             print(to_log)
 
@@ -82,7 +84,7 @@ def log_imports(path):
                         printed_path = True
                     print("\t" + key_string.hex())
 
-for file in glob.glob(arguments.basepath + "/**/*.sys", recursive=True):
+for file in glob.glob(arguments.basepath + "/**/*." + arguments.extension, recursive=True):
     log_imports(file)
 
 print('\n')
