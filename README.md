@@ -5,7 +5,7 @@
 
 ``python3 imports.py [-h] [-i IMPORTS] [-o OUTPUT] [-d DELIM] [-s STRINGS] basepath``
 
-The arguments that are passed into this script should be done so in the following order:
+Here's a breakdown of PE-Import's acceptable arguments:
 
 - ``imports``: The path to a newline-separated file of strings that represent imports to be flagged.
 - ``output``: The path to a file where a complete log of all imports should be written.
@@ -62,7 +62,7 @@ C:/Windows/System32/WinAccel.sys
 
 > Feel free to use [this](https://gchq.github.io/CyberChef/#recipe=Comment('Be%20sure%20to%20add%20a%20%5C'Find%20/%20Replace%5C'%20*between*%20regexes')Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IoCreateDevice%5B%5C%5C/%5C%5C@%5C%5Cs%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IoCreateSymbolicLink%5B%5C%5C/%5C%5C@%5C%5Cs%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')Regular_expression('User%20defined','%5E%5B%5C%5C/%5C%5Cw%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*%5C%5Cs%2Bntoskrnl%5C%5C.exe!IofCompleteRequest%5B%5C%5C/%5C%5C@%5C%5Cs%5D%5B%5E%5C%5Cn%5D%2B%5C%5Cn(%5C%5Cs%2B%5B%5E%5C%5Cn%5D%2B%5C%5Cn)*',true,true,false,false,false,false,'List%20matches')) CyberChef query to list drivers which import ``IoCreateDevice``, ``IoCreateSymbolicLink``, ``ZwMapViewOfSection``, and ``IofCompleteRequest`` via postprocessing (using an output/``-o`` file).
 
-> Additionally, ``^[\/\w][^\n]+\n(\s+[^\n]+\n){0,5}(?=[^\s])`` may be used as a regular expression to identify  drivers with less than a five imports, common signal of obfuscation/packing.
+> Additionally, ``^[\/\w][^\n]+\n(\s+[^\n]+\n){0,5}(?=[^\s])`` may be used as a regular expression to identify  drivers with less than five imports, common signal of obfuscation/packing.
 
 ## Tips
 - Running this on Linux (or WSL) makes it much easier to do a wider-range of scanning across drivers as the root ``/mnt/`` path can be used to have the program enumerate imports from all drives (allowing for a more generic scanning process) but the tool is compatible with all operating-systems that support PEFile and Python 3.
